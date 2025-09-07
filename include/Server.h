@@ -1,8 +1,17 @@
-//
-// Created by abel on 2025/9/7.
-//
+#pragma once
+#include <boost/asio.hpp>
+#include "LogicProcessor.h"
+#include "MySQLPool.h"
 
-#ifndef TOMATO_SERVER_SERVER_H
-#define TOMATO_SERVER_SERVER_H
+class Server {
+public:
+    Server(boost::asio::io_context& io_context, short port,
+           LogicProcessor& logic, MySQLPool& db);
 
-#endif //TOMATO_SERVER_SERVER_H
+private:
+    void do_accept();
+
+    boost::asio::ip::tcp::acceptor acceptor_;
+    LogicProcessor& logic_;
+    MySQLPool& db_;
+};

@@ -1,8 +1,26 @@
-//
-// Created by abel on 2025/9/7.
-//
+#pragma once
+#include <thread>
+#include <vector>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+#include <functional>
 
-#ifndef TOMATO_SERVER_LOGICPROCESSOR_H
-#define TOMATO_SERVER_LOGICPROCESSOR_H
+class LogicProcessor {
+public:
+    using Task = std::function<void()>;
 
-#endif //TOMATO_SERVER_LOGICPROCESSOR_H
+    explicit LogicProcessor(size_t thread_count);
+    ~LogicProcessor();
+
+    void post(Task task);
+
+private:
+    void workerThread();
+
+    std::vector<std::thread> workers_;
+    std::queue<Task> tasks_;
+    std::mutex mtx_;
+    std::condition_variable cv_;
+    bool stop_;
+};

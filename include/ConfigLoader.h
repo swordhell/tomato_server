@@ -1,8 +1,25 @@
-//
-// Created by abel on 2025/9/7.
-//
+#pragma once
+#include <string>
 
-#ifndef TOMATO_SERVER_CONFIGLOADER_H
-#define TOMATO_SERVER_CONFIGLOADER_H
+struct DBConfig {
+    int pool_size;
+    std::string host;
+    std::string user;
+    std::string password;
+    std::string name;
+};
 
-#endif //TOMATO_SERVER_CONFIGLOADER_H
+struct LogConfig {
+    std::string level;
+    std::string file;
+};
+
+struct AppConfig {
+    DBConfig db;
+    LogConfig log;
+};
+
+class ConfigLoader {
+public:
+    static AppConfig load(const std::string& file);
+};

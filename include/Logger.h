@@ -1,8 +1,10 @@
-//
-// Created by abel on 2025/9/7.
-//
+#pragma once
+#include <boost/log/trivial.hpp>
+#include <boost/log/sources/severity_logger.hpp>
+#include <boost/log/sources/record_ostream.hpp>
+#include <string>
 
-#ifndef TOMATO_SERVER_LOGGER_H
-#define TOMATO_SERVER_LOGGER_H
-
-#endif //TOMATO_SERVER_LOGGER_H
+class Logger {
+public:
+    static void init(const std::string& logFile, const std::string& level);
+};

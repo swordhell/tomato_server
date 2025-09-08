@@ -4,6 +4,7 @@ database:
   user: root
   password: mypassword
   name: testdb
+  port: 3306
 
 logging:
   level: info

@@ -2,7 +2,7 @@
 #include <string>
 
 struct DBConfig {
-    int pool_size;
+    std::size_t pool_size;
     std::string host;
     std::string user;
     std::string password;

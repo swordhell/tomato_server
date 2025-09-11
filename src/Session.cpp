@@ -1,8 +1,10 @@
 #include "Session.h"
 #include <boost/asio/post.hpp>
+#include <boost/log/trivial.hpp>
 
 Session::Session(boost::asio::ip::tcp::socket socket, LogicProcessor &logic, MySQLPool &db)
-        : socket_(std::move(socket)), logic_(logic), db_(db) {}
+    : socket_(std::move(socket)), logic_(logic), db_(db) {
+}
 
 void Session::start() { do_read(); }
 
@@ -15,13 +17,21 @@ void Session::do_read() {
 
                                     // 交给逻辑线程处理
                                     logic_.post([this, self, req]() {
-                                        auto fut = db_.queryAsync("SELECT 'Hello from MySQL'");
-                                        std::string db_result = fut.get();
-                                        std::string response = "Request: " + req + ", DB: " + db_result;
+                                        auto fut = db_.executeAsync("SELECT 'Hello from MySQL'");
+                                        DbResult db_result = fut.get();
 
-                                        boost::asio::post(socket_.get_executor(), [this, self, response]() {
-                                            do_write(response);
-                                        });
+                                        if (!db_result.error.empty()) {
+                                            BOOST_LOG_TRIVIAL(error) << "DB Error: " << db_result.error << "\n";
+                                        } else if (db_result.isQuery) {
+                                            for (auto &row: db_result.rows) {
+                                                BOOST_LOG_TRIVIAL(info) << "id=" << row["id"]
+                                                        << ", name=" << row["name"]
+                                                        << ", value=" << row["value"] << "\n";
+                                            }
+                                        } else {
+                                            BOOST_LOG_TRIVIAL(info) << "Affected rows: " << db_result.affectedRows << "\n";
+                                        }
+
                                     });
 
                                     do_read();

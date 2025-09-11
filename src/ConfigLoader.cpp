@@ -7,7 +7,7 @@ AppConfig ConfigLoader::load(const std::string& file) {
     try {
         YAML::Node root = YAML::LoadFile(file);
         auto db = root["database"];
-        cfg.db.pool_size = db["pool_size"].as<int>();
+        cfg.db.pool_size = db["pool_size"].as<std::size_t>();
         cfg.db.host      = db["host"].as<std::string>();
         cfg.db.user      = db["user"].as<std::string>();
         cfg.db.password  = db["password"].as<std::string>();

@@ -5,7 +5,7 @@
 
 class Server {
 public:
-    Server(boost::asio::io_context& io_context, short port,
+    Server(boost::asio::io_context& io_context, const std::uint16_t port,
            LogicProcessor& logic, MySQLPool& db);
 
 private:

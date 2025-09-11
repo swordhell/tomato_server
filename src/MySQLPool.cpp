@@ -19,7 +19,7 @@ MySQLPool::MySQLPool(size_t pool_size, const std::string& host,
 }
 
 MySQLPool::~MySQLPool() {
-    for (auto conn : connections_) mysql_close(conn);
+    std::ranges::for_each(connections_, [](MYSQL* conn){ mysql_close(conn); });
 }
 
 MYSQL* MySQLPool::getConnection() {
@@ -58,12 +58,12 @@ std::future<DbResult> MySQLPool::executeAsync(const std::string& sql) {
         MYSQL_RES* res = mysql_store_result(conn);
         if (res) { // SELECT 查询
             result.isQuery = true;
-            int num_fields = mysql_num_fields(res);
-            MYSQL_FIELD* fields = mysql_fetch_fields(res);
+            const unsigned int num_fields = mysql_num_fields(res);
+            const MYSQL_FIELD* fields = mysql_fetch_fields(res);
             MYSQL_ROW row;
             while ((row = mysql_fetch_row(res))) {
                 std::unordered_map<std::string, std::string> rowMap;
-                for (int i = 0; i < num_fields; ++i)
+                for (unsigned int i = 0; i < num_fields; ++i)
                     rowMap[fields[i].name] = row[i] ? row[i] : "";
                 result.rows.push_back(std::move(rowMap));
             }

@@ -2,7 +2,7 @@
 #include "Session.h"
 #include <memory>
 
-Server::Server(boost::asio::io_context &io_context, short port,
+Server::Server(boost::asio::io_context &io_context, const std::uint16_t port,
                LogicProcessor &logic, MySQLPool &db)
         : acceptor_(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
           logic_(logic), db_(db) {

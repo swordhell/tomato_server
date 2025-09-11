@@ -1,22 +1,133 @@
+明白，我把之前的 README.md 全部用原始 Markdown 输出，不带额外的说明或注释，直接可以放到项目里使用：
+
 # 🍅 Tomato Server
 
-[![C++17](https://img.shields.io/badge/C++-17-blue.svg)](https://isocpp.org/std/the-standard)  
-[![Boost](https://img.shields.io/badge/Boost-1.70+-lightgrey.svg)](https://www.boost.org/)  
-[![MySQL](https://img.shields.io/badge/MySQL-client-blue.svg)](https://dev.mysql.com/doc/)  
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![C++](https://img.shields.io/badge/C++-17-blue?logo=c%2B%2B)](https://isocpp.org/)  
+[![Boost](https://img.shields.io/badge/Boost-1.82-lightgrey?logo=boost)](https://www.boost.org/)  
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?logo=mysql)](https://www.mysql.com/)  
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ---
 
-## 🚀 项目简介
+## 📖 Overview
 
-**Tomato Server** 是一个基于 **Boost.Asio** 的现代 C++17 TCP 服务器框架，特点：
+**Tomato Server** is a modern, modular TCP server framework written in **C++17**, designed for high-performance network
+applications.  
+It emphasizes clean architecture, asynchronous operations, and easy extensibility.
 
-- 异步网络通信，使用 Boost.Asio
-- 逻辑线程池处理业务逻辑
-- MySQL 数据库线程池异步查询
-- 支持多客户端并发请求
-- 高性能、模块化设计，易扩展
+Key features:
+
+- Multi-threaded, asynchronous network communication using **Boost.Asio**
+- Thread-safe **MySQL connection pool** for database operations
+- Modular protocol layer supporting **JSON**, **Protobuf**, and **FlatBuffers**
+- Flexible message dispatcher and logic processor
+- Centralized logging using **Boost.Log**
+- Configuration via **YAML** files
 
 ---
 
-## 🏗️ 项目结构
+## 📁 Project Structure
+
+```txt
+tomato_server/
+├─ CMakeLists.txt
+├─ README.md
+├─ config.yaml
+├─ include/
+│   ├─ IMessage.h
+│   ├─ JsonMessage.h
+│   ├─ ProtoMessage.h
+│   ├─ FlatMessage.h
+│   ├─ ProtocolParser.h
+│   ├─ MessageDispatcher.h
+│   ├─ Session.h
+│   ├─ Server.h
+│   ├─ MySQLPool.h
+│   ├─ LogicProcessor.h
+│   ├─ Logger.h
+│   └─ ConfigLoader.h
+├─ src/
+├─ cpp/
+└─ third_party/
+```
+
+---
+
+## 🔹 Architecture
+
+```txt
++------------------+
+|      Network     |
+|  (Server/Session)|
++------------------+
+         |
+         v
++------------------+
+|     Protocol     |
+| (Parser/Message) |
++------------------+
+         |
+         v
++------------------+
+|       Logic      |
+| (Dispatcher/Logic)|
++------------------+
+         |
+         v
++------------------+
+|     Database     |
+|   (MySQL Pool)   |
++------------------+
+```
+
+- **Network Layer**: Manages TCP connections and reads/writes asynchronously
+- **Protocol Layer**: Handles packet parsing, sticky packet splitting, and message serialization/deserialization
+- **Logic Layer**: Dispatches messages to handlers, processes business logic
+- **Database Layer**: Provides thread-safe MySQL connection pool and async queries
+
+---
+
+## ⚡ Technology Stack
+
+| Component                  | Purpose                                        |
+|----------------------------|------------------------------------------------|
+| **C++17**                  | Modern language features, smart pointers, RAII |
+| **Boost.Asio**             | High-performance asynchronous network I/O      |
+| **Boost.Log**              | Thread-safe logging                            |
+| **MySQL**                  | Persistent data storage with connection pool   |
+| **YAML-CPP**               | Configuration management                       |
+| **Protobuf / FlatBuffers** | Efficient message serialization                |
+| **CMake**                  | Build system, dependency management            |
+
+---
+
+## 🚀 Quick Start
+
+1. **Install dependencies** (Boost, MySQL, YAML-CPP, etc.)
+2. **Build the server**:
+
+```bash
+mkdir build && cd build
+cmake ..
+cmake --build .
+
+	3.	Run the server:
+
+./tomato_server
+
+	4.	Configure the server via config.yaml
+
+⸻
+
+🔧 Notes
+	•	Fully thread-safe design using std::mutex and modern C++ concurrency features
+	•	Asynchronous database operations via std::future / std::promise
+	•	Protocol layer supports JSON, Protobuf, FlatBuffers interchangeably
+	•	Easily extendable: add new message types or business logic without touching network or database code
+
+⸻
+
+📜 License
+
+MIT License © 2025
+

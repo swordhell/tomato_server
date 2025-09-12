@@ -72,6 +72,9 @@ add_executable(${PROJECT_NAME}
         main.cpp
         ${SOURCES}
         ${HEADERS}
+        include/IMessage.h
+        src/ProtocolParser.cpp
+        include/ProtocolParser.h
 )
 
 # -------------------- 链接库 --------------------

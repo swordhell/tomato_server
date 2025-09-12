@@ -1,5 +1,3 @@
-明白，我把之前的 README.md 全部用原始 Markdown 输出，不带额外的说明或注释，直接可以放到项目里使用：
-
 # 🍅 Tomato Server
 
 [![C++](https://img.shields.io/badge/C++-17-blue?logo=c%2B%2B)](https://isocpp.org/)  

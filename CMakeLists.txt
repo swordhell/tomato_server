@@ -43,7 +43,8 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS include/*.h)
 
 # ---------------- 可执行文件 ----------------
 
-add_executable(${PROJECT_NAME} main.cpp ${SOURCES} ${HEADERS})
+add_executable(${PROJECT_NAME} main.cpp ${SOURCES} ${HEADERS}
+        include/BloomFilter.h)
 # 顶层 include 目录
 target_include_directories(${PROJECT_NAME}
         PRIVATE
@@ -71,17 +72,20 @@ find_package(GTest REQUIRED)
 add_executable(test_mysql
         tests/test_mysql.cpp
         src/MySQLPool.cpp
+        src/BloomFilter.cpp
+        tests/test_bloomfilter.cpp
 )
-target_include_directories(test_mysql
-        PRIVATE
-        ${PROJECT_SOURCE_DIR}/include
-)
+target_include_directories(test_mysql PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(test_mysql
         PRIVATE
-        GTest::gtest
         GTest::gtest_main
         pthread
         spdlog::spdlog fmt::fmt yaml-cpp::yaml-cpp
         unofficial::libmysql::libmysql
 )
+add_executable(test_bloomfilter tests/test_bloomfilter.cpp src/BloomFilter.cpp)
+target_include_directories(test_bloomfilter PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(test_bloomfilter PRIVATE GTest::gtest_main pthread)
+
 add_test(NAME TestMySQL COMMAND test_mysql)
+add_test(NAME BloomFilterTest COMMAND test_bloomfilter)

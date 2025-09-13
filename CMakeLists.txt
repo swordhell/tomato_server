@@ -23,7 +23,7 @@ endif()
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-link_directories(${CMAKE_BINARY_DIR}/lib)
+
 # ---------------- 查找依赖 ----------------
 find_package(boost_asio REQUIRED CONFIG)
 find_package(unofficial-libmysql REQUIRED)
@@ -34,6 +34,11 @@ find_package(Boost REQUIRED COMPONENTS system log log_setup regex thread filesys
 
 # ---------------- 递归查找源文件 ----------------
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
+## 打印调试
+#message(STATUS "SOURCES:")
+#foreach(src_file IN LISTS SOURCES)
+#    message(STATUS "  ${src_file}")
+#endforeach()
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS include/*.h)
 
 # ---------------- 可执行文件 ----------------
@@ -59,3 +64,24 @@ elseif(UNIX AND NOT APPLE)
 endif()
 
 # ---------------- 单元测试 -----------
+enable_testing()
+find_package(GTest REQUIRED)
+
+# 测试可执行文件
+add_executable(test_mysql
+        tests/test_mysql.cpp
+        src/MySQLPool.cpp
+)
+target_include_directories(test_mysql
+        PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+)
+target_link_libraries(test_mysql
+        PRIVATE
+        GTest::gtest
+        GTest::gtest_main
+        pthread
+        spdlog::spdlog fmt::fmt yaml-cpp::yaml-cpp
+        unofficial::libmysql::libmysql
+)
+add_test(NAME TestMySQL COMMAND test_mysql)

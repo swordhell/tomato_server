@@ -12,10 +12,12 @@ void Session::do_read() {
     socket_.async_read_some(boost::asio::buffer(data_, sizeof(data_)),
                             [this, self](boost::system::error_code ec, std::size_t length) {
         if (!ec) {
-            std::string req(data_, length);
+            std::vector<uint8_t> data;
+            ProtocolParser parser;
+            parser.appendData(data);
 
             // 解析协议
-            auto message = ProtocolParser::parse(req);
+            auto message = parser.parse();
 
             // 提交到逻辑线程
             logic_.post([this, self, message]() {

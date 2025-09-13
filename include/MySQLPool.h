@@ -16,19 +16,22 @@ struct DbResult {
 
 class MySQLPool {
 public:
-    MySQLPool(size_t pool_size, const std::string& host,
-              const std::string& user, const std::string& passwd,
-              const std::string& db);
+    MySQLPool(size_t pool_size,
+                  const std::string& host,
+                  const std::string& user,
+                  const std::string& passwd,
+                  const std::string& db,
+                  unsigned int port = 3306);
+
     ~MySQLPool();
 
+    // 异步执行 SQL
     std::future<DbResult> executeAsync(const std::string& sql);
 
 private:
-    MYSQL* getConnection();
+    MYSQL* acquireConnection();
     void releaseConnection(MYSQL* conn);
 
-private:
-    std::vector<MYSQL*> connections_;
-    std::queue<MYSQL*> freeConnections_;
+    std::queue<MYSQL*> connections_;
     std::mutex mutex_;
 };
